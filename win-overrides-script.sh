@@ -5,6 +5,7 @@ uiProjectDir="testDir"
 uhUsername="uhusername"
 grouperPassword="groupPass"
 emailPreference="No"
+userEmail="template@dne.com"
 user=$(whoami)
 # Welcome message that explains what this tool is
 echo ""
@@ -20,7 +21,11 @@ read -r -p "Enter UH Groupings API project directory (drag and drop uh-groupings
 read -r -p "Enter UH Groupings UI project directory (drag and drop uh-groupings-ui directory in this window and press enter: " uiProjectDirInput
 read -r -p "Enter your UH Username (e.g. kobeya): " uhUsername
 read -r -p "Enter the grouper password (get this from your mentor through secure filedrop, NEVER send this password through email or direct message): " grouperPassword
-read -r -p "Enable email stack trace when errors occur? (Yes/No)" emailPreference
+read -r -p "Enable email stack trace when errors occur? (Yes/No): " emailPreference
+
+if [[ "$emailPreference" == "yes" || "$emailPreference" == "y" || "$emailPreference" == "Yes" || "$emailPreference" == "Y" ]] then
+  read -r -p "Enter your email: " userEmail
+fi 
 
 # If the config folder already exists, prompt user to delete it
 if [ -d ~/.$user-conf/ ]; then
@@ -44,7 +49,7 @@ sed -i "s/^\(grouperClient\.webService\.password\s*=\s*\).*\$/\1$grouperPassword
 cp $uiProjectDir/uh-groupings-ui-overrides.skeleton.properties $HOME/.$user-conf/uh-groupings-ui-overrides.properties
 
 if [[ "$emailPreference" == "yes" || "$emailPreference" == "y" || "$emailPreference" == "Yes" || "$emailPreference" == "Y" ]]; then
-  sed -i "s/^#\(email\.send\.recipient\s*=\s*\).*\$/\1$emailPreference/" $HOME/.$user-conf/uh-groupings-api-overrides.properties
+  sed -i "s/^#\(email\.send\.recipient\s*=\s*\).*\$/\1$userEmail/" $HOME/.$user-conf/uh-groupings-api-overrides.properties
   sed -i "s/^\(email\.is\.enabled\s*=\s*\).*\$/\1true/" $HOME/.$user-conf/uh-groupings-api-overrides.properties
   sed -i "s/^\(email\.is\.enabled\s*=\s*\).*\$/\1true/" $HOME/.$user-conf/uh-groupings-ui-overrides.properties
 fi
